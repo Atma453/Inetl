@@ -1,1 +1,414 @@
-re
+1 | P a g e
+PROBLEM STATEMENT 6
+Product Category Creation for Healthcare Kiosks in India
+Category: Artificial Intelligence, Machine Learning, Computer Vision, Federated
+Learning, Healthcare, Electronic Health Records (EHRs), Telemedicine.
+We choose Category: Machine Learning
+AIM:
+We are planning to develop a machine learning model that will remind patients, their family members, or children to take their medicine on time using text-to-speech and vice versa. It should also send notifications to the patient. This will be especially helpful when children or family members are living abroad, as they can still monitor and remind the patient remotely. We are using PyTorch, and the medicine reminders will work through both speech-to-text and text-to-speech. The patient's name is Ravi, and he must take his medicine three times a day as prescribed by the diagnostic machine — at 9:00 AM (morning), 2:00 PM (afternoon), and 8:00 PM (night).
+Prework:
+As a prerequisite for this project, we went through several YouTube playlists. To begin this project, we completed some preliminary work, including studying the relevant YouTube playlists.
+1)https://youtube.com/playlist?list=PLwATfeyAMNoirN4idjev6aRu8ISZYVWm&si=2i84bQ4FsYOy7Xa-
+2)https://youtube.com/playlist?list=PLwATfeyAMNqIee7cH3q1bh4QJFAaeNv0&si=2048i5cuyV1RUpS8
+The summary of the pre-work playlist is as follows:
+Overview:
+This guide is an intermediate-level introduction to audio signal processing, emphasizing its application in machine learning and AI, especially for tasks like speech recognition, music analysis, and sound classification. It blends core signal processing concepts with practical Python implementations using Librosa and NumPy.
+Key Applications:
+
+Speech recognition (ASR)
+
+Speaker verification
+
+Audio denoising
+
+Music information retrieval (genre detection, instrument identification, mood analysis)
+2 | P a g e
+Target Audience:
+
+ ML engineers, software developers, CS students
+
+ Musicians & audio tech enthusiasts
+
+ Assumes prior knowledge of ML or DSP basics
+Core Concepts Covered:
+1. Fundamentals of Sound:
+
+ Sound is a mechanical longitudinal wave made of compression and rarefaction regions.
+
+ Frequency (Hz) controls pitch, amplitude controls loudness.
+
+ Waveform = pressure variation over time; analyzed for audio characteristics.
+
+ Sounds are either periodic (like sine waves) or aperiodic (like noise).
+2. Human Hearing & Perception:
+
+ Hearing range: ~20 Hz to 20 kHz
+
+ Pitch is perceived logarithmically; relates to octaves and MIDI notes
+
+ Timbre differentiates sounds with same pitch/loudness — shaped by:
+o Harmonics
+o ADSR envelope
+o Modulations (vibrato/tremolo)
+3. Digital Audio Basics:
+
+ Analog-to-Digital Conversion (ADC):
+o Sampling (rate, Nyquist theorem)
+o Quantization (bit depth, quantization error)
+
+ Storage & playback: CD quality = 44.1 kHz, 16-bit, ~5.5MB/minute
+
+ Aliasing: Prevent with low-pass filters before sampling
+3 | P a g e
+Audio Features for ML:
+1. Levels of Abstraction:
+
+ Low-level: ZCR, amplitude, RMS, raw waveform
+
+ Mid-level: Spectrograms, MFCCs
+
+ High-level: Melody, rhythm, key (musically interpretable)
+2. Temporal Scope:
+
+ Instantaneous (e.g. RMS at a time slice)
+
+ Segmental (2–10 sec clips)
+
+ Global (whole track average features)
+3. Domains:
+
+ Time-domain: Amplitude, ZCR
+
+ Frequency-domain: Spectral centroid, bandwidth, BER
+
+ Time-Frequency: Spectrograms, MFCCs, Mel spectrograms
+Feature Extraction Techniques:
+1.Time-Domain:
+
+ Amplitude envelope: Peak value per frame
+
+ Zero-Crossing Rate (ZCR): Frequency estimation and noisiness
+
+ Root Mean Square (RMS): Signal energy per frame
+2.Frequency-Domain:
+
+ Fourier Transform (FT): Decomposes sound into sinusoids
+
+ Short-Time Fourier Transform (STFT): Tracks frequency changes over time
+
+ Spectrogram: STFT magnitude vs. time
+
+ Mel Spectrogram: STFT scaled to match human pitch perception
+
+ MFCCs: Compact cepstral features for speech/music classification
+
+ Spectral Features:
+o Centroid: Brightness of sound
+o Bandwidth: Spread of frequencies
+o BER: Energy ratio in low vs high frequencies
+4 | P a g e
+Tools Used:
+
+ Librosa: Audio loading, STFT, MFCC, filtering
+
+ Matplotlib: Visualization of waveform, spectrograms
+
+ NumPy: Custom FFT, feature calculations
+Hands-On Implementation Topics:
+
+ Visualizing waveforms & spectrograms
+
+ Extracting ZCR, RMS, amplitude envelope
+
+ Computing and interpreting:
+o MFCCs and their derivatives (Δ, ΔΔ)
+o Spectral centroid and bandwidth
+o Band energy ratios (BER)
+
+ Comparing features across genres (e.g. jazz vs rock vs classical)
+Final Concepts:
+
+ Fourier Transform uses complex numbers (magnitude + phase)
+
+ Complex numbers are visualized using real + imaginary parts or polar coordinates
+Conclusion:
+This resource provides a strong foundation for audio ML tasks by blending theory, perceptual science, and coding. It is essential for building AI applications in speech recognition, music tagging, acoustic detection, and more.
+We work in three domains:
+
+ Automatic speech recognition
+
+ Text to speech and vice Versa
+
+ PyTorch using NLP
+5 | P a g e
+1)Automatic speech recognition:
+Tutorial,review and survey papers recent.
+Publishers:IEEE, Wiley, springer, arxiv.
+We thoroughly studied each research paper, understood the concepts, and analyzed the topics in depth. We also ensured a clear understanding of the research papers published by the above-mentioned authors in IEEE.
+1) https://ietresearch.onlinelibrary.wiley.com/doi/abs/10.1049/iet-spr.2012.0151
+2) https://ieeexplore.ieee.org/iel7/6287639/6514899/09536732.pdf
+3) https://link.springer.com/content/pdf/10.1155/2010/926951.pdf
+4) https://arxiv.org/pdf/1812.06864
+Here is a summary of all four research papers you provided, focused on automatic speech recognition (ASR) techniques and applications:
+1. Comparative Study of Automatic Speech Recognition Techniques
+
+ Type: Comparative Survey
+
+ Focus: Analyzes and compares different ASR techniques, especially hybrid models that combine multiple approaches.
+
+ Techniques Covered:
+o Feature extraction: MFCC, LPC, Wavelet Transform
+o Classifiers: HMM, ANN, SVM
+
+ Key Insight:
+o Hybrid systems (e.g., MFCC + Wavelet + ANN) outperform single-method systems in accuracy and robustness.
+
+ Conclusion: Suggests future research should focus on combining complementary techniques to boost recognition rates.
+6 | P a g e
+2. Automatic Speech Recognition Using MFCC and DTW
+
+ Type: Experimental Research
+
+ Focus: Uses MFCC (Mel-Frequency Cepstral Coefficients) for feature extraction and DTW (Dynamic Time Warping) for speech pattern matching.
+
+ Methodology:
+o Tested on isolated words recorded from 10 speakers.
+o Compared DTW results to original templates.
+
+ Results:
+o Accuracy: ~95% for speaker-dependent ASR using MFCC + DTW.
+
+ Conclusion: A simple and effective approach for small-vocabulary recognition tasks. Best suited for speaker-dependent systems.
+3. ASR for Evaluation of Voice/Speech Disorders in Cancer Patients
+
+ Type: Clinical Application Study
+
+ Focus: Applies ASR to evaluate speech disorders in head and neck cancer patients post-treatment (e.g., after laryngectomy).
+
+ Methodology:
+o Used ASR to assess intelligibility in recorded speech.
+o Compared ASR results with human expert ratings.
+
+ Findings:
+o High correlation between ASR output and expert judgment (r = -0.93).
+o Patients' intelligibility ranged widely (8%–82% word recognition).
+
+ Conclusion:
+o ASR provides an objective, fast, and non-invasive way to evaluate speech disorders.
+7 | P a g e
+4. Fully Convolutional Speech Recognition
+
+ Type: Deep Learning / Neural Architecture
+
+ Focus: Introduces an end-to-end ASR model using only convolutional layers, with no recurrent networks or hand-crafted features.
+
+ Innovations:
+o Raw waveform input (no MFCCs or spectrograms).
+o Convolutional encoder and convolutional language model.
+o Training with AutoSeg and CTC loss functions.
+
+ Performance:
+o Matches or outperforms RNN-based systems like DeepSpeech2 on WSJ and LibriSpeech datasets.
+
+ Conclusion:
+o CNNs can fully replace RNNs in ASR pipelines, offering faster training and better parallelism without loss in accuracy.
+8 | P a g e
+2) Text to speech and vice Versa:
+Tutorial,review and survey papers recent
+These are the publishers
+IEEE ,Wiley ,springer,arxiv,Taylor and francis
+We thoroughly studied each research paper, understood the concepts, and analyzed the topics in depth. We also ensured a clear understanding of the research papers published by the above-mentioned authors in IEEE.
+1) https://ieeexplore.ieee.org/iel7/6287639/6514899/10124769.pdf
+2) https://onlinelibrary.wiley.com/doi/pdf/10.1207/s15516709cog2601_4
+3) https://link.springer.com/content/pdf/10.1007/BF00993821.pdf
+4) https://arxiv.org/pdf/2006.04558
+Here is a summary of all four research papers onText to speech and vice Versa you provided, focused on techniques and applications:
+1. SAFE: Synthetic Audio Forensics Evaluation Challenge
+
+ Type: Overview and challenge design (2023)
+
+ Scope: Introduces the SAFE benchmark, designed to evaluate audio forensic tools in detecting synthetic speech and manipulated recordings.
+
+ Key Content:
+o Defines evaluation metrics, protocols, datasets of both synthetic and real audio.
+o Reviews existing forensic methods (e.g. spectral analysis, deep learning detectors).
+o Details challenge rules, submission guidelines, and baseline performance benchmarks.
+
+ Significance: Offers a structured platform for comparing and improving methods in audio forensics.
+9 | P a g e
+2. Learning Words from Sights and Sounds: A Computational Model
+
+ Type: Computational cognitive modeling
+
+ Objective: Simulates how infants learn word–object associations through multimodal sensory input (vision + audio).
+
+ Approach:
+o Unsupervised learning—no labeled data.
+o Models statistical regularities in synchronized audiovisual streams (images & associated words) and clusters representations into word–object pairs.
+
+ Findings:
+o Capable of developing a lexicon with reasonable alignment accuracy.
+
+ Impact: Supports theories of cross-modal bootstrapping in early language acquisition processes.
+3. A Comparison of ID3 and Backpropagation for English Text-to-Speech Mapping
+
+ Type: Experimental ML comparison
+
+ Goal: Compares ID3 (decision-tree) vs backpropagation neural networks in mapping English text to phonemic and stress patterns.
+
+ Methodology:
+o Employed distributed output coding (Sejnowski & Rosenberg style).
+o Three hypotheses tested to explain performance differences.
+
+ Results:
+o Backpropagation outperformed ID3 by several percentage points.
+o Analysis indicated backprop’s ability to model richer statistical regularities was the key advantage.
+o When ID3 was enhanced with statistical smoothing, its performance nearly matched BP.
+
+ Conclusion: Backprop excels in capturing nuanced dependencies, but simple enhancements can improve symbolic learners.
+10 | P a g e
+4. FastSpeech 2: Fast and High-Quality End-to-End Text-to-Speech
+
+ Type: Deep Learning – Non-autoregressive TTS
+
+ Objective: Improve training efficiency and voice quality over the original FastSpeech model.
+
+ Key Innovations:
+o Removes teacher-student distillation—uses ground-truth duration, pitch, and energy as conditioning signals.
+o Introduces FastSpeech 2s, a fully end-to-end model directly synthesizing waveform.
+
+ Performance Gains:
+o 3× faster training, simpler pipeline.
+o Improves speech quality—surpasses autoregressive TTS in MOS ratings.
+o FastSpeech 2s offers even faster inference.
+3) PyTorch using NLP:
+We went through the PyTorch NLP playlist available on YouTube, which I have mentioned below.
+1)https://youtube.com/playlist?list=PLqL-7eLmqd9V3faivSAST76YQClS44dSz&si=zRymMz6uu4J2vAE7
+Note :We have been planning to work on this project, but we need some more time to complete it. So far, we have developed code that includes interaction only between the patient and the caretaker.
+CODE:
+# Install required libraries
+!pip install pyttsx3 SpeechRecognition pyaudio --quiet
+!pip install pipwin --quiet
+!pipwin install pyaudio
+import time
+import pyttsx3
+import speech_recognition as sr
+11 | P a g e
+import csv
+from datetime import datetime, timedelta
+import os
+data = {
+"patient_name": "Ravi",
+"language": "en",
+"medicines": [
+{"name": "xyz", "time": "09:00"},
+{"name": "xyz", "time": "14:00"},
+{"name": "xyz", "time": "20:00"}
+]
+}
+# For testing, update times to a few seconds ahead
+now = datetime.now()
+data["medicines"] = [
+{"name": "xyz", "time": (now + timedelta(seconds=5)).strftime("%H:%M")},
+{"name": "xyz", "time": (now + timedelta(seconds=10)).strftime("%H:%M")},
+{"name": "xyz", "time": (now + timedelta(seconds=15)).strftime("%H:%M")},
+]
+tts_engine = pyttsx3.init()
+tts_engine.setProperty('rate', 150)
+def send_voice_reminder(message):
+print(f"[TTS] {message}")
+tts_engine.say(message)
+tts_engine.runAndWait()
+12 | P a g e
+recognizer = sr.Recognizer()
+def listen_patient_response():
+try:
+with sr.Microphone() as source:
+print("🗣️ Listening for patient response...")
+audio = recognizer.listen(source, timeout=5, phrase_time_limit=5)
+response = recognizer.recognize_google(audio)
+print(f"✅ Recognized: {response}")
+return response.lower()
+except Exception as e:
+print(f"⚠️ STT error: {e}")
+return "no response"
+def save_to_csv(record, filename="medicine_log.csv"):
+file_exists = os.path.isfile(filename)
+with open(filename, mode='a', newline='') as file:
+writer = csv.DictWriter(file, fieldnames=["timestamp", "medicine", "response"])
+if not file_exists:
+writer.writeheader()
+writer.writerow(record)
+print(f"💾 Record saved: {record}")
+def check_medicine_schedule():
+now_time = datetime.now().strftime("%H:%M")
+for med in data["medicines"]:
+if med["time"] == now_time:
+# Speak reminder
+13 | P a g e
+reminder = f"Namaste {data['patient_name']}, it's time to take your medicine {med['name']}."
+send_voice_reminder(reminder)
+# Listen to Ravi
+response = listen_patient_response()
+# Speak back Ravi's response
+if response != "no response":
+response_msg = f"Ravi, you said: {response}. Thank you!"
+else:
+response_msg = "Sorry Ravi, I could not understand you."
+send_voice_reminder(response_msg)
+record = {
+"timestamp": datetime.now().isoformat(),
+"medicine": med["name"],
+"response": response
+}
+save_to_csv(record)
+def run_scheduler_for_testing(duration_seconds=30):
+print("[INFO] Starting reminder system in test mode...")
+start_time = time.time()
+while time.time() - start_time < duration_seconds:
+check_medicine_schedule()
+time.sleep(1)
+run_scheduler_for_testing(30)
+14 | P a g e
+NOTE:
+Currently, the code is running only in Jupyter Notebook. Our goal is to develop it further into an AI assistant. This assistant will enable interaction not only between the patient and the caretaker but also with family members or children living abroad. The system will connect them to the patient’s device, allowing the AI model to notify the patient—through speech or text—about when to take their medicine. This will be highly effective in supporting the patient’s health and keeping family members informed and involved, even from a distance.
+Introduction:
+This project presents a voice-enabled medicine reminder system designed using Python, integrating machine learning concepts, text-to-speech (TTS) and speech-to-text (STT) technologies. The primary goal is to assist patients—especially elderly or chronically ill individuals like the patient Ravi in this case—in adhering to their prescribed medication schedule. The system uses PyTorch (planned), Pyttsx3, SpeechRecognition, and pyaudio libraries, and can function as a basic AI assistant prototype. The assistant gives medicine reminders using TTS, listens for a response using STT, and logs every interaction for monitoring by caretakers or family members, including those living abroad.
+System Design:
+The system is designed with the following components:
+1. Configuration Module
+o Patient details (e.g., name, language)
+o Medicine names and scheduled times (dynamically adjusted for testing)
+2. Text-to-Speech Engine
+o Uses pyttsx3 to generate voice alerts to remind the patient
+3. Speech-to-Text Engine
+o Uses SpeechRecognition and Google’s API to capture patient responses via microphone
+4. Data Logging Module
+o Patient interactions and responses are logged in a CSV file (medicine_log.csv) for future reference
+5. Medicine Scheduler
+o Continuously checks for scheduled medicine times and triggers the reminder accordingly
+6. Testing Scheduler
+15 | P a g e
+o A test mode that simulates medicine reminders within short time intervals for demonstration.
+Implementation:
+The system has been implemented entirely in Python, running in a Jupyter Notebook environment. Below is a summary of the implementation details:
+
+ Libraries Used:
+o pyttsx3: For TTS reminders
+o SpeechRecognition + pyaudio: For capturing and converting patient speech to text
+o csv, datetime, os, time: For data handling and scheduling
+
+ Voice Reminders: The assistant greets the patient with a personalized message and reminds them about their medicine.
+
+ Voice Input: The system listens to the patient’s voice and transcribes it using Google’s speech recognition engine.
+
+ CSV Logging: Every reminder and corresponding patient response is recorded with a timestamp for caregiver review.
+
+ Testing Mode: For demonstration purposes, medicine times are set a few seconds ahead and run for 30 seconds to simulate real-time functionality.
+Conclusion:
+This project demonstrates a foundational prototype of a personalized medicine reminder system that can later evolve into a smart AI assistant for remote patient care. Its ability to communicate with patients using voice and record responses makes it suitable for real-world use cases, particularly where the caretaker or family is located abroad. In the future, this system can be enhanced with deep learning models (using PyTorch), real-time remote notifications, mobile app integration, and multi-language support to improve scalability and accessibility.
+References:
+1. Pyttsx3 Documentation
+2. SpeechRecognition Library
+3. NPTEL PyTorch Playlist (as mentioned in your earlier inputs)
+4. [IEEE Research Papers on AI in Healthcare] (as referred to in your study)
